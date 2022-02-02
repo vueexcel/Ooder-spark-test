@@ -1,24 +1,31 @@
 <template>
   <v-card
-    class="mx-auto my-12"
+    class="mx-auto my-2"
     max-width="374"
   >
-    <v-img
-      height="250"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-    ></v-img>
+    <v-carousel height="250">
+        <v-carousel-item
+        v-for="(item,i) in items.images"
+        :key="i"
+        :src="item.src"
+        reverse-transition="slide-x-reverse-transition"
+        transition="slide-x-reverse-transition"
+        ></v-carousel-item>
+    </v-carousel>
 
-    <v-card-title>Cafe Badilico</v-card-title>
+    <v-card-title>{{items.name}}</v-card-title>
 
     <v-card-text>
-        <span>$1500.00</span> 
-        <span></span>
+        <span v-if="items.currentPrice" :class="items.previousPrice?'red--text text--lighten-1':''">${{items.currentPrice}}</span> 
+        <span class="ml-2" v-if="items.previousPrice"><strike>${{items.previousPrice}}</strike></span>
     </v-card-text>
 
     <v-card-actions>
       <v-btn
-        color="deep-purple lighten-2"
-        text
+        depressed
+        color="primary"
+        class="px-6 mb-2"
+        @click="AddToCart()"
       >
         ADD TO CART
       </v-btn>
@@ -27,8 +34,27 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
-  name: 'ProductCard'
+  name: 'ProductCard',
+  props:{
+      items: Object
+  },
+  data () {
+    return {
+    }
+  },
+  methods:{
+      ...mapActions("cart", ['addToCart']),
+      AddToCart(){
+         let payload = {
+             id: this.items.id,
+             quantity: 1
+         }
+         this.addToCart(payload);
+      }
+  }
+    
 }
 </script>
 
